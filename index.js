@@ -148,12 +148,33 @@ app.post("/applications", async(req, res) => {
 })
 
 
+app.patch("/applications/:id", async(req, res) => {
+  const id = req.params.id
+
+  const query = {_id : new ObjectId(id)}
+
+  const updatedDoc = {
+    $set : {
+      status : req.body.status
+    }
+  }
+
+  const result = await application.updateOne(query, updatedDoc)
+  res.send(result)
+})
+
+
 app.get("/applications", async (req, res) => {
 
   const query = {}
 
   if(req.query.userId){
     query.userId = req.query.userId
+  }
+
+
+  if(req.query.jobId){
+    query.jobId = req.query.jobId
   }
 
   const cursor = application.find(query)
@@ -367,6 +388,28 @@ app.get("/user/:id/premium", async(req, res) => {
 
   res.send(result)
 })
+
+
+app.patch("/user/:id/role", async(req, res) => {
+
+  const id = req.params.id
+
+  const query = {_id : new ObjectId(id)}
+
+  const updatedDoc = {
+    $set : {
+      role : req.body.role
+    }
+  }
+
+  const result = await users.updateOne(query,updatedDoc)
+
+  res.send(result)
+})
+
+
+
+
 app.listen(PORT, () => {
     console.log("app is running on port", PORT)
 })
